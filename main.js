@@ -243,6 +243,23 @@ function gPush() {
     MS.push(modelMatrix);
 }
 
+function clampValue(value, minVal, maxVal) {
+    return Math.min(Math.max(value, minVal), maxVal);
+}
+
+function mixVec3(a, b, t) {
+    return [
+        a[0] + (b[0] - a[0]) * t,
+        a[1] + (b[1] - a[1]) * t,
+        a[2] + (b[2] - a[2]) * t
+    ];
+}
+
+function smoothStep01(t) {
+    var clamped = clampValue(t, 0.0, 1.0);
+    return clamped * clamped * (3.0 - 2.0 * clamped);
+}
+
 function initTextures() {
     textureCatalog.forEach(function(asset) {
         var texture = gl.createTexture();
@@ -305,7 +322,7 @@ function updateCamera() {
 
 function updateAnimationState() {
     doorSwing = -20.0 + 18.0 * Math.sin(TIME * 1.2);
-    bellSwing = 18.0 * Math.sin(TIME * 2.2);
+    bellSwing = 30.0 * Math.sin(TIME * 2.2);
     clapperSwing = 40.0 * Math.sin(TIME * 3.3 + 0.8);
 }
 
@@ -342,6 +359,31 @@ function drawChurch() {
     drawTower(3.2);
     drawRearBellTower();
     drawRoofCross();
+}
+
+function drawBackTower() {
+    gPush();
+        gTranslate(0.0, 0.1, -6.6);
+        gScale(0.9, 1.8, 0.9);
+        setColor(vec4(0.93, 0.94, 0.98, 1.0));
+        setSurface({ textureMode: TEXTURE_MODE.WALL, texScale: [1.5, 2.0] });
+        drawCube();
+    gPop();
+    gPush();
+        gTranslate(0.0, 1.9, -6.6);
+        gScale(0.78, 0.35, 0.78);
+        setColor(vec4(0.82, 0.83, 0.9, 1.0));
+        setSurface({ textureMode: TEXTURE_MODE.WALL, texScale: [1.2, 0.9] });
+        drawCube();
+    gPop();
+    gPush();
+        gTranslate(0.0, 3.0, -6.6);
+        gRotate(-90, 1, 0, 0);
+        gScale(0.75, 0.75, 1.45);
+        setColor(vec4(0.34, 0.5, 0.6, 1.0));
+        setSurface({ textureMode: TEXTURE_MODE.ROOF, texScale: [1.0, 1.0] });
+        drawCone();
+    gPop();
 }
 
 function drawNaveBody() {
@@ -388,31 +430,6 @@ function drawRearWall() {
             drawCube();
         gPop();
     });
-}
-
-function drawBackTower() {
-    gPush();
-        gTranslate(0.0, 0.1, -6.6);
-        gScale(0.9, 1.8, 0.9);
-        setColor(vec4(0.93, 0.94, 0.98, 1.0));
-        setSurface({ textureMode: TEXTURE_MODE.WALL, texScale: [1.5, 2.0] });
-        drawCube();
-    gPop();
-    gPush();
-        gTranslate(0.0, 1.9, -6.6);
-        gScale(0.78, 0.35, 0.78);
-        setColor(vec4(0.82, 0.83, 0.9, 1.0));
-        setSurface({ textureMode: TEXTURE_MODE.WALL, texScale: [1.2, 0.9] });
-        drawCube();
-    gPop();
-    gPush();
-        gTranslate(0.0, 3.0, -6.6);
-        gRotate(-90, 1, 0, 0);
-        gScale(0.75, 0.75, 1.45);
-        setColor(vec4(0.34, 0.5, 0.6, 1.0));
-        setSurface({ textureMode: TEXTURE_MODE.ROOF, texScale: [1.0, 1.0] });
-        drawCone();
-    gPop();
 }
 
 function drawMainRoof() {
@@ -539,21 +556,15 @@ function drawTowerWindows() {
 
 function drawRearBellTower() {
     gPush();
-        gTranslate(0.0, 1.6, -4.2);
+        gTranslate(0.0, 2.2, -4.2);
         gPush();
-            gScale(1.9, 0.5, 1.6);
-            setColor(vec4(0.9, 0.92, 0.96, 1.0));
-            setSurface({ textureMode: TEXTURE_MODE.WALL, texScale: [1.4, 1.0] });
-            drawCube();
-        gPop();
-        gPush();
-            gTranslate(0.0, 2.0, 0.0);
+            gTranslate(0.0, 1.1, 0.0);
             drawBelfryStructure();
         gPop();
         gPush();
-            gTranslate(0.0, 4.6, 0.0);
+            gTranslate(0.0, 4.8, 0.0);
             gRotate(-90, 1, 0, 0);
-            gScale(0.85, 0.85, 1.6);
+            gScale(0.95, 0.95, 2.2);
             setColor(vec4(0.35, 0.52, 0.64, 1.0));
             setSurface({ textureMode: TEXTURE_MODE.ROOF, texScale: [1.2, 1.6] });
             drawCone();
@@ -604,25 +615,11 @@ function drawBellAssembly() {
     gPush();
         gRotate(bellSwing, 0, 0, 1);
         gPush();
-            gScale(1.4, 0.15, 0.45);
-            setColor(vec4(0.45, 0.28, 0.1, 1.0));
-            setSurface({ textureMode: TEXTURE_MODE.ROOF, texScale: [1.0, 1.0] });
-            drawCube();
-        gPop();
-        gPush();
             gTranslate(0.0, -0.5, 0.0);
             gScale(0.5, 0.5, 0.5);
             setColor(vec4(0.93, 0.77, 0.22, 1.0));
             setSurface({ textureMode: TEXTURE_MODE.NONE });
             drawSphere();
-        gPop();
-        gPush();
-            gTranslate(0.0, -1.1, 0.0);
-            gRotate(-clapperSwing, 0, 0, 1);
-            gScale(0.12, 0.7, 0.12);
-            setColor(vec4(0.2, 0.2, 0.2, 1.0));
-            setSurface({ textureMode: TEXTURE_MODE.NONE });
-            drawCube();
         gPop();
     gPop();
 }
@@ -667,7 +664,8 @@ function drawLanterns() {
 }
 
 function drawBats() {
-    for(var i = 0; i < 6; i++) {
+    drawShapeshifterBat();
+    for(var i = 1; i < 6; i++) {
         var orbitAngle = TIME * 0.55 + i * 1.07;
         var radius = 8.5 + Math.sin(TIME * 0.4 + i) * 1.5;
         var height = 0.5 + Math.sin(TIME * 2.2 + i * 0.9) * 1.5;
@@ -710,6 +708,307 @@ function drawBatWing(direction, flapAngle) {
             gScale(0.9, 0.05, 0.4);
             drawCube();
         gPop();
+    gPop();
+}
+
+function drawVampireForm() {
+    setSurface({ textureMode: TEXTURE_MODE.NONE });
+    var capeColor = vec4(0.25, 0.03, 0.07, 1.0);
+    var suitColor = vec4(0.08, 0.05, 0.12, 1.0);
+    var accentColor = vec4(0.6, 0.05, 0.12, 1.0);
+    var shirtColor = vec4(0.92, 0.92, 0.96, 1.0);
+    var skinColor = vec4(0.95, 0.9, 0.84, 1.0);
+    var shoeColor = vec4(0.07, 0.05, 0.09, 1.0);
+    
+    drawVampireCape(capeColor);
+    drawVampireTorso(suitColor, accentColor, shirtColor);
+    drawVampireHeadAndFace(skinColor);
+    drawVampireArm(-1, suitColor, skinColor, accentColor);
+    drawVampireArm(1, suitColor, skinColor, accentColor);
+    drawVampireLeg(-0.11, suitColor, shoeColor);
+    drawVampireLeg(0.11, suitColor, shoeColor);
+}
+
+function drawVampireCape(capeColor) {
+    var capePulse = 0.04 + 0.015 * Math.sin(TIME * 4.0);
+    setColor(capeColor);
+    // Lower cape
+    gPush();
+        gTranslate(0.0, 0.05, -0.08);
+        gScale(0.8, 1.0, 0.05 + capePulse);
+        drawCube();
+    gPop();
+    // Shoulder cape
+    gPush();
+        gTranslate(0.0, 0.55, -0.05);
+        gScale(0.7, 0.35, 0.06 + capePulse * 0.6);
+        drawCube();
+    gPop();
+    // Collar flare
+    gPush();
+        gTranslate(0.0, 0.5, -0.02);
+        gRotate(-15, 1, 0, 0);
+        gScale(0.5, 0.25, 0.04);
+        drawCube();
+    gPop();
+}
+
+function drawVampireTorso(suitColor, accentColor, shirtColor) {
+    // Upper torso
+    setColor(suitColor);
+    gPush();
+        gTranslate(0.0, 0.28, 0.0);
+        gScale(0.28, 0.65, 0.2);
+        drawCube();
+    gPop();
+    // Lower torso / belt
+    gPush();
+        gTranslate(0.0, -0.05, 0.0);
+        gScale(0.32, 0.25, 0.2);
+        drawCube();
+    gPop();
+    // Lapel / shirt insert
+    gPush();
+        gTranslate(0.0, 0.26, 0.1);
+        gScale(0.15, 0.45, 0.02);
+        setColor(shirtColor);
+        drawCube();
+    gPop();
+    // Medallion strap
+    gPush();
+        gTranslate(0.0, 0.18, 0.11);
+        gScale(0.05, 0.28, 0.01);
+        setColor(accentColor);
+        drawCube();
+    gPop();
+    // Medallion center
+    gPush();
+        gTranslate(0.0, 0.05, 0.12);
+        gScale(0.07, 0.07, 0.02);
+        setColor(vec4(0.95, 0.8, 0.32, 1.0));
+        drawCube();
+    gPop();
+}
+
+function drawVampireHeadAndFace(skinColor) {
+    // Head
+    setColor(skinColor);
+    gPush();
+        gTranslate(0.0, 1.2, 0.0);
+        gScale(0.17, 0.2, 0.17);
+        drawCube();
+    gPop();
+    // Hair
+    setColor(vec4(0.04, 0.03, 0.07, 1.0));
+    gPush();
+        gTranslate(0.0, 1.35, -0.01);
+        gScale(0.2, 0.1, 0.17);
+        drawCube();
+    gPop();
+    // Brow ridge
+    gPush();
+        gTranslate(0.0, 1.26, 0.075);
+        gScale(0.19, 0.035, 0.018);
+        drawCube();
+    gPop();
+    // Eyes and pupils
+    var eyeOffsetX = 0.07;
+    setColor(vec4(0.4, 0.02, 0.05, 1.0));
+    [-eyeOffsetX, eyeOffsetX].forEach(function(x) {
+        gPush();
+            gTranslate(x, 1.21, 0.08);
+            gScale(0.045, 0.02, 0.01);
+            drawCube();
+        gPop();
+        gPush();
+            gTranslate(x, 1.205, 0.09);
+            gScale(0.03, 0.02, 0.008);
+            setColor(vec4(1.0, 0.1, 0.1, 1.0));
+            drawCube();
+        gPop();
+    });
+    // Mouth + fangs
+    gPush();
+        gTranslate(0.0, 1.1, 0.095);
+        gScale(0.075, 0.012, 0.01);
+        setColor(vec4(0.2, 0.0, 0.03, 1.0));
+        drawCube();
+    gPop();
+    [-0.03, 0.03].forEach(function(x) {
+        gPush();
+            gTranslate(x, 1.07, 0.105);
+            gScale(0.012, 0.045, 0.012);
+            setColor(vec4(1.0, 1.0, 1.0, 1.0));
+            drawCube();
+        gPop();
+        gPush();
+            gTranslate(x, 1.05, 0.12);
+            gRotate(-25, 1, 0, 0);
+            gScale(0.007, 0.03, 0.018);
+            setColor(vec4(0.95, 0.95, 0.98, 1.0));
+            drawCube();
+        gPop();
+    });
+}
+
+function drawVampireArm(direction, suitColor, skinColor, accentColor) {
+    gPush();
+        gTranslate(direction * 0.34, 0.4, 0.05);
+        gRotate(direction * 10.0, 0, 0, 1);
+        // Upper arm
+        gPush();
+            gScale(0.11, 0.45, 0.12);
+            setColor(suitColor);
+            drawCube();
+        gPop();
+        // Elbow joint
+        gPush();
+            gTranslate(0.0, -0.4, 0.0);
+            gScale(0.12, 0.12, 0.12);
+            setColor(accentColor);
+            drawCube();
+        gPop();
+        // Forearm
+        gPush();
+            gTranslate(0.0, -0.65, 0.0);
+            gRotate(direction * 5.0, 0, 0, 1);
+            gScale(0.1, 0.35, 0.1);
+            setColor(suitColor);
+            drawCube();
+        gPop();
+        // Hand
+        gPush();
+            gTranslate(0.0, -0.85, 0.02);
+            gScale(0.09, 0.12, 0.12);
+            setColor(skinColor);
+            drawCube();
+        gPop();
+    gPop();
+}
+
+function drawVampireLeg(xOffset, suitColor, shoeColor) {
+    gPush();
+        gTranslate(xOffset, -0.2, 0.05);
+        // Upper leg
+        gPush();
+            gScale(0.12, 0.5, 0.12);
+            setColor(suitColor);
+            drawCube();
+        gPop();
+        // Knee
+        gPush();
+            gTranslate(0.0, -0.45, 0.0);
+            gScale(0.13, 0.12, 0.13);
+            setColor(vec4(0.55, 0.04, 0.08, 1.0));
+            drawCube();
+        gPop();
+        // Lower leg
+        gPush();
+            gTranslate(0.0, -0.7, 0.0);
+            gScale(0.1, 0.35, 0.1);
+            setColor(suitColor);
+            drawCube();
+        gPop();
+        // Foot
+        gPush();
+            gTranslate(0.0, -0.92, 0.1);
+            gScale(0.13, 0.12, 0.25);
+            setColor(shoeColor);
+            drawCube();
+        gPop();
+    gPop();
+}
+
+function drawShapeshifterBat() {
+    var landingSpot = vec3(0.0, 2.9, 3.8);
+    var cycleLength = 14.0;
+    var settleEnd = 1.0;
+    var vampireEnd = 3.8;
+    var perchEnd = 4.8;
+    var takeoffEnd = 5.5;
+    var cycleTime = TIME % cycleLength;
+    var orbitAngle = TIME * 0.52;
+    var radius = 9.5 + Math.sin(TIME * 0.25) * 1.2;
+    var height = 1.2 + Math.sin(TIME * 2.0) * 1.4;
+    var flightPos = [
+        Math.cos(orbitAngle) * radius,
+        height,
+        Math.sin(orbitAngle) * radius
+    ];
+    var heading = orbitAngle * 180.0 / Math.PI + 90.0;
+    var flapAngle = 30 + 22 * Math.sin(TIME * 6.2);
+    var landingHeading = 0.0;
+    
+    if(cycleTime < settleEnd) {
+        var t = clampValue(cycleTime / settleEnd, 0.0, 1.0);
+        var pos = mixVec3(flightPos, landingSpot, t);
+        var easedFlap = flapAngle * (1.0 - 0.6 * t);
+        gPush();
+            gTranslate(pos[0], pos[1], pos[2]);
+            gRotate(landingHeading, 0, 1, 0);
+            drawBatBody(easedFlap);
+        gPop();
+        return;
+    }
+    if(cycleTime < vampireEnd) {
+        var appearProgress = clampValue((cycleTime - settleEnd) / (vampireEnd - settleEnd), 0.0, 1.0);
+        gPush();
+            gTranslate(landingSpot[0], landingSpot[1], landingSpot[2]);
+            gRotate(landingHeading, 0, 1, 0);
+            gScale(1.0, 0.9 + 0.2 * appearProgress, 1.0);
+            drawVampireForm();
+        gPop();
+        return;
+    }
+    if(cycleTime < perchEnd) {
+        var idle = clampValue((cycleTime - vampireEnd) / (perchEnd - vampireEnd), 0.0, 1.0);
+        gPush();
+            gTranslate(landingSpot[0], landingSpot[1] + 0.05 * Math.sin(TIME * 3.6), landingSpot[2]);
+            gRotate(landingHeading, 0, 1, 0);
+            drawBatBody(6.0 * (1.0 - idle));
+        gPop();
+        return;
+    }
+    if(cycleTime < takeoffEnd) {
+        var tOut = clampValue((cycleTime - perchEnd) / (takeoffEnd - perchEnd), 0.0, 1.0);
+        var eased = smoothStep01(tOut);
+        var departPos = mixVec3(landingSpot, flightPos, eased);
+        var dirXZ = [
+            flightPos[0] - landingSpot[0],
+            flightPos[2] - landingSpot[2]
+        ];
+        var dirLen = Math.sqrt(dirXZ[0] * dirXZ[0] + dirXZ[1] * dirXZ[1]);
+        if(dirLen < 0.0001) { dirLen = 1.0; }
+        var right = [-dirXZ[1] / dirLen, dirXZ[0] / dirLen];
+        var lateral = Math.sin(eased * Math.PI) * 0.6;
+        departPos[0] += right[0] * lateral;
+        departPos[2] += right[1] * lateral;
+        departPos[1] = landingSpot[1] + Math.sin(eased * Math.PI) * 1.2 + eased * 0.6;
+        var prevEase = smoothStep01(Math.max(tOut - 0.04, 0.0));
+        var prevPos = mixVec3(landingSpot, flightPos, prevEase);
+        prevPos[0] += right[0] * Math.sin(prevEase * Math.PI) * 0.6;
+        prevPos[2] += right[1] * Math.sin(prevEase * Math.PI) * 0.6;
+        prevPos[1] = landingSpot[1] + Math.sin(prevEase * Math.PI) * 1.2 + prevEase * 0.6;
+        var headingVector = [
+            departPos[0] - prevPos[0],
+            departPos[2] - prevPos[2]
+        ];
+        var departHeading = landingHeading;
+        if(Math.abs(headingVector[0]) > 0.0001 || Math.abs(headingVector[1]) > 0.0001) {
+            departHeading = Math.atan2(headingVector[1], headingVector[0]) * 180.0 / Math.PI;
+        }
+        gPush();
+            gTranslate(departPos[0], departPos[1], departPos[2]);
+            gRotate(departHeading, 0, 1, 0);
+            drawBatBody(flapAngle * (0.5 + 0.5 * tOut));
+        gPop();
+        return;
+    }
+    
+    gPush();
+        gTranslate(flightPos[0], flightPos[1], flightPos[2]);
+        gRotate(heading, 0, 1, 0);
+        drawBatBody(flapAngle);
     gPop();
 }
 
