@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+
+<script id="vertex-shader" type="x-shader/x-vertex">#version 300 es
+
+in vec4 vPosition;
+in vec3 vNormal;
+in vec2 vTexCoord;
+
+out vec3 fNormal;
+out vec3 fPosition;
+out vec2 fTexCoord;
+
+uniform mat4 modelViewMatrix;
+uniform mat4 normalMatrix;
+uniform mat4 projectionMatrix;
+
+void main()
+{
+    vec4 eyePosition = modelViewMatrix * vPosition;
+    fPosition = eyePosition.xyz;
+    fNormal = normalize((normalMatrix * vec4(vNormal, 0.0)).xyz);
+    fTexCoord = vTexCoord;
+    gl_Position = projectionMatrix * eyePosition;
+}
+</script>
+
+<script id="fragment-shader" type="x-shader/x-fragment">#version 300 es
+
+precision mediump float;
+
+in vec3 fNormal;
+in vec3 fPosition;
+in vec2 fTexCoord;
+
+layout(location=0) out vec4 fragColor;
+
+uniform vec4 ambientProduct;
+uniform vec4 diffuseProduct;
+uniform vec4 specularProduct;
+uniform vec4 lightPosition;
+uniform float shininess;
+
+uniform sampler2D uStoneTexture;
+uniform sampler2D uRoofTexture;
+uniform sampler2D uGlassTexture;
+uniform sampler2D uWallTexture;
+uniform sampler2D uGrassTexture;
+uniform sampler2D uWindowTexture;
+uniform int uTextureMode;
+uniform vec2 uTexScale;
+uniform bool uUseGlassEffect;
+uniform vec3 uGlassGlowColor;
+uniform float uTime;
+
+vec4 fetchTextureColor(int mode, vec2 uv) {
+    vec2 tiledUV = uv * uTexScale;
+    if(mode == 1) {
+        return texture(uStoneTexture, tiledUV);
+    } else if(mode == 2) {
+        return texture(uRoofTexture, tiledUV);
+    } else if(mode == 3) {
+        return texture(uGlassTexture, tiledUV);
+    } else if(mode == 4) {
+        return texture(uWallTexture, tiledUV);
+    } else if(mode == 5) {
+        return texture(uGrassTexture, tiledUV);
+    } else if(mode == 6) {
+        return texture(uWindowTexture, tiledUV);
+    }
+    return vec4(1.0, 1.0, 1.0, 1.0);
+}
+
+void main()
+{
+    vec3 N = normalize(fNormal);
+    vec3 L = normalize(lightPosition.xyz - fPosition);
+    vec3 V = normalize(-fPosition);
+    vec3 H = normalize(L + V);
+
+    float diff = max(dot(N, L), 0.0);
+    vec4 diffuse = diffuseProduct * diff;
+    float specStrength = pow(max(dot(N, H), 0.0), shininess);
+    vec4 specular = vec4(0.0);
+    if(diff > 0.0) {
+        specular = specularProduct * specStrength;
+    }
+
+    vec4 lighting = ambientProduct + diffuse + specular;
+    vec4 sampled = fetchTextureColor(uTextureMode, fTexCoord);
+
+    vec3 glassGlow = vec3(0.0);
+    if(uUseGlassEffect) {
+        vec2 centered = (fTexCoord * uTexScale) - vec2(0.5); // Center UVs so glow reacts to window midpoint
+        float radial = length(centered); // Measure distance from the center to create radial falloff
+        float pulse = 0.5 + 0.5 * sin(uTime * 3.5 + radial * 18.0); // Create time-based shimmer that also varies across rings
+        float edgeBand = smoothstep(0.15, 0.45, radial); // Isolate the outer ring of the window for a halo look
+        float streaks = smoothstep(0.0, 1.0, sin((centered.x + centered.y) * 42.0 + uTime * 6.0)); // Animate diagonal streaks to mimic refracted light
+        glassGlow = uGlassGlowColor * pulse * (1.0 - edgeBand) * streaks; // Tint and scale the glow to keep it bright only near glass highlights
+    }
+
+    vec3 shaded = lighting.rgb * sampled.rgb + glassGlow;
+    fragColor = vec4(shaded, 1.0);
+}
+</script>
+
+<script type="text/javascript" src="Common/webgl-utils.js"></script>
+<script type="text/javascript" src="Common/initShaders.js"></script>
+
+<script type="text/javascript" src="Common/MV.js"></script>
+<script type="text/javascript" src="objects.js"></script>
+<script type="text/javascript" src="main.js"></script>
+
+
+<body>
+<canvas id="gl-canvas" width="512" height="512">
+Oops ... your browser doesn't support the HTML5 canvas element
+</canvas>
+
+<br/>
+<br/>
+
+<div id="animToggleButton">
+    <input id="animToggleButton" type="button" value="Toggle Animation"
+    />
+
+</div><br/>
+
+</body>
+</html>
