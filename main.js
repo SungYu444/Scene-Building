@@ -332,6 +332,7 @@ function drawWalkway() {
 function drawChurch() {
     drawNaveBody();
     drawRearWall();
+    drawBackTower();
     drawMainRoof();
     drawEntrance();
     drawRoseWindow();
@@ -354,46 +355,64 @@ function drawNaveBody() {
 }
 
 function drawRearWall() {
+    var wallCenterZ = -5.4;
+    var wallDepth = 0.4;
+    var rearFaceZ = wallCenterZ - wallDepth * 0.5;
+    var reliefDepth = 0.14;
+    var reliefCenterZ = rearFaceZ - reliefDepth * 0.5 - 0.02;
+    var buttressDepth = 0.12;
+    var buttressCenterZ = rearFaceZ - buttressDepth * 0.5 - 0.01;
+
     gPush();
-        gTranslate(0.0, -0.2, -5.4);
-        gScale(3.3, 2.3, 0.4);
+        gTranslate(0.0, -0.2, wallCenterZ);
+        gScale(3.3, 2.3, wallDepth);
         setColor(vec4(0.92, 0.92, 0.96, 1.0));
         setSurface({ textureMode: TEXTURE_MODE.WALL, texScale: [3.0, 2.4] });
         drawCube();
     gPop();
     
-    // Stone insets using the FiveArches texture so the rear wall ties in with the main masonry
+    // FiveArches relief panel sits slightly proud of the masonry to avoid z-fighting while keeping the surface visually flush
     gPush();
-        gTranslate(0.0, 0.0, -5.2);
-        gScale(2.4, 1.8, 0.25);
+        gTranslate(0.0, 0.0, reliefCenterZ);
+        gScale(2.5, 1.85, reliefDepth);
         setColor(vec4(1.0, 1.0, 1.0, 1.0));
-        setSurface({ textureMode: TEXTURE_MODE.STONE, texScale: [2.6, 2.0] });
+        setSurface({ textureMode: TEXTURE_MODE.STONE, texScale: [2.4, 1.9] });
         drawCube();
     gPop();
     [-1.9, 1.9].forEach(function(x) {
         gPush();
-            gTranslate(x, 0.0, -5.25);
-            gScale(0.35, 2.0, 0.2);
+            gTranslate(x, -0.05, buttressCenterZ);
+            gScale(0.4, 2.15, buttressDepth);
             setColor(vec4(1.0, 1.0, 1.0, 1.0));
-            setSurface({ textureMode: TEXTURE_MODE.STONE, texScale: [1.0, 2.0] });
+            setSurface({ textureMode: TEXTURE_MODE.STONE, texScale: [0.9, 2.2] });
             drawCube();
         gPop();
     });
-    
-    var windowOffsets = [-1.6, 0.0, 1.6];
-    windowOffsets.forEach(function(x) {
-        gPush();
-            gTranslate(x, 0.2, -5.05);
-            gScale(0.8, 1.9, 0.22);
-            setColor(vec4(1.0, 1.0, 1.0, 1.0));
-            setSurface({
-                textureMode: TEXTURE_MODE.WINDOW,
-                texScale: [2.4, 3.0],
-                glassEffect: false
-            });
-            drawCube();
-        gPop();
-    });
+}
+
+function drawBackTower() {
+    gPush();
+        gTranslate(0.0, 0.1, -6.6);
+        gScale(0.9, 1.8, 0.9);
+        setColor(vec4(0.93, 0.94, 0.98, 1.0));
+        setSurface({ textureMode: TEXTURE_MODE.WALL, texScale: [1.5, 2.0] });
+        drawCube();
+    gPop();
+    gPush();
+        gTranslate(0.0, 1.9, -6.6);
+        gScale(0.78, 0.35, 0.78);
+        setColor(vec4(0.82, 0.83, 0.9, 1.0));
+        setSurface({ textureMode: TEXTURE_MODE.WALL, texScale: [1.2, 0.9] });
+        drawCube();
+    gPop();
+    gPush();
+        gTranslate(0.0, 3.0, -6.6);
+        gRotate(-90, 1, 0, 0);
+        gScale(0.75, 0.75, 1.45);
+        setColor(vec4(0.34, 0.5, 0.6, 1.0));
+        setSurface({ textureMode: TEXTURE_MODE.ROOF, texScale: [1.0, 1.0] });
+        drawCone();
+    gPop();
 }
 
 function drawMainRoof() {
@@ -415,7 +434,7 @@ function drawDoorPanel() {
         gTranslate(-0.6, -1.2, 5.35);
         gRotate(doorSwing, 0, 1, 0);
         gTranslate(0.6, 0.0, 0.0);
-        gScale(1.2, 1.6, 0.08);
+        gScale(1.2, 1.35, 0.08);
         setColor(vec4(0.55, 0.33, 0.15, 1.0));
         setSurface({ textureMode: TEXTURE_MODE.ROOF, texScale: [1.0, 1.5] });
         drawCube();
@@ -501,7 +520,7 @@ function drawTower(xOffset) {
 }
 
 function drawTowerWindows() {
-    var heights = [0.0, 1.2, 2.4];
+    var heights = [0.0, 1.2];
     heights.forEach(function(h) {
         gPush();
             gTranslate(0.0, h, 0.45);
