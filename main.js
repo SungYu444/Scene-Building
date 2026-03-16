@@ -22,7 +22,7 @@ var textureCatalog = [
     { name: "stone", unit: 0, src: "Public/FiveArches_S.jpg" },
     { name: "roof", unit: 1, src: "Public/SevenArches_S.jpg" },
     { name: "glass", unit: 2, src: "Public/ThreeFlowerShapedB_S.jpg" },
-    { name: "wall", unit: 3, src: "Public/Screenshot 2026-03-11 at 2.06.25 PM.jpeg" },
+    { name: "wall", unit: 3, src: "Public/wall.jpeg" },
     { name: "grass", unit: 4, src: "Public/grass.png" },
     { name: "window", unit: 5, src: "Public/SevenArches_N.jpg" }
 ];
@@ -363,21 +363,21 @@ function drawChurch() {
 
 function drawBackTower() {
     gPush();
-        gTranslate(0.0, 0.1, -6.6);
-        gScale(0.9, 1.8, 0.9);
+        gTranslate(0.0, -0.3, -6.6);
+        gScale(0.95, 2.5, 0.95);
         setColor(vec4(0.93, 0.94, 0.98, 1.0));
         setSurface({ textureMode: TEXTURE_MODE.WALL, texScale: [1.5, 2.0] });
         drawCube();
     gPop();
     gPush();
-        gTranslate(0.0, 1.9, -6.6);
-        gScale(0.78, 0.35, 0.78);
+        gTranslate(0.0, 2.4, -6.6);
+        gScale(0.82, 0.4, 0.82);
         setColor(vec4(0.82, 0.83, 0.9, 1.0));
         setSurface({ textureMode: TEXTURE_MODE.WALL, texScale: [1.2, 0.9] });
         drawCube();
     gPop();
     gPush();
-        gTranslate(0.0, 3.0, -6.6);
+        gTranslate(0.0, 3.2, -6.6);
         gRotate(-90, 1, 0, 0);
         gScale(0.75, 0.75, 1.45);
         setColor(vec4(0.34, 0.5, 0.6, 1.0));
@@ -435,7 +435,7 @@ function drawRearWall() {
 function drawMainRoof() {
     gPush();
         gTranslate(0.0, 2.4, 0.0);
-        gScale(3.5, 1.2, 5.6);
+        gScale(3.65, 1.2, 5.6);
         setColor(vec4(0.35, 0.54, 0.62, 1.0));
         setSurface({ textureMode: TEXTURE_MODE.ROOF, texScale: [2.5, 4.0] });
         drawCylinder();
@@ -734,21 +734,21 @@ function drawVampireCape(capeColor) {
     setColor(capeColor);
     // Lower cape
     gPush();
-        gTranslate(0.0, 0.05, -0.08);
-        gScale(0.8, 1.0, 0.05 + capePulse);
+        gTranslate(0.0, 0.05, -0.2);
+        gScale(0.8, 1.0, 0.04 + capePulse);
         drawCube();
     gPop();
     // Shoulder cape
     gPush();
-        gTranslate(0.0, 0.55, -0.05);
-        gScale(0.7, 0.35, 0.06 + capePulse * 0.6);
+        gTranslate(0.0, 0.55, -0.17);
+        gScale(0.68, 0.35, 0.05 + capePulse * 0.6);
         drawCube();
     gPop();
     // Collar flare
     gPush();
-        gTranslate(0.0, 0.5, -0.02);
-        gRotate(-15, 1, 0, 0);
-        gScale(0.5, 0.25, 0.04);
+        gTranslate(0.0, 0.5, -0.11);
+        gRotate(-20, 1, 0, 0);
+        gScale(0.48, 0.25, 0.035);
         drawCube();
     gPop();
 }
@@ -794,21 +794,21 @@ function drawVampireHeadAndFace(skinColor) {
     // Head
     setColor(skinColor);
     gPush();
-        gTranslate(0.0, 1.2, 0.0);
-        gScale(0.17, 0.2, 0.17);
+        gTranslate(0.0, 1.08, 0.0);
+        gScale(0.2, 0.23, 0.2);
         drawCube();
     gPop();
     // Hair
     setColor(vec4(0.04, 0.03, 0.07, 1.0));
     gPush();
-        gTranslate(0.0, 1.35, -0.01);
-        gScale(0.2, 0.1, 0.17);
+        gTranslate(0.0, 1.2, -0.01);
+        gScale(0.24, 0.12, 0.2);
         drawCube();
     gPop();
     // Brow ridge
     gPush();
-        gTranslate(0.0, 1.26, 0.075);
-        gScale(0.19, 0.035, 0.018);
+        gTranslate(0.0, 1.12, 0.2);
+        gScale(0.21, 0.04, 0.02);
         drawCube();
     gPop();
     // Eyes and pupils
@@ -816,12 +816,12 @@ function drawVampireHeadAndFace(skinColor) {
     setColor(vec4(0.4, 0.02, 0.05, 1.0));
     [-eyeOffsetX, eyeOffsetX].forEach(function(x) {
         gPush();
-            gTranslate(x, 1.21, 0.08);
+            gTranslate(x, 1.09, 0.22);
             gScale(0.045, 0.02, 0.01);
             drawCube();
         gPop();
         gPush();
-            gTranslate(x, 1.205, 0.09);
+            gTranslate(x, 1.085, 0.24);
             gScale(0.03, 0.02, 0.008);
             setColor(vec4(1.0, 0.1, 0.1, 1.0));
             drawCube();
@@ -829,22 +829,22 @@ function drawVampireHeadAndFace(skinColor) {
     });
     // Mouth + fangs
     gPush();
-        gTranslate(0.0, 1.1, 0.095);
-        gScale(0.075, 0.012, 0.01);
+        gTranslate(0.0, 0.98, 0.26);
+        gScale(0.09, 0.015, 0.01);
         setColor(vec4(0.2, 0.0, 0.03, 1.0));
         drawCube();
     gPop();
     [-0.03, 0.03].forEach(function(x) {
         gPush();
-            gTranslate(x, 1.07, 0.105);
-            gScale(0.012, 0.045, 0.012);
+            gTranslate(x, 0.95, 0.24);
+            gScale(0.012, 0.05, 0.012);
             setColor(vec4(1.0, 1.0, 1.0, 1.0));
             drawCube();
         gPop();
         gPush();
-            gTranslate(x, 1.05, 0.12);
+            gTranslate(x, 0.93, 0.27);
             gRotate(-25, 1, 0, 0);
-            gScale(0.007, 0.03, 0.018);
+            gScale(0.008, 0.035, 0.018);
             setColor(vec4(0.95, 0.95, 0.98, 1.0));
             drawCube();
         gPop();
