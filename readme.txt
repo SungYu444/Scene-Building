@@ -14,13 +14,12 @@ Animated gothic church courtyard with hierarchical motion, fragment lighting, mu
 - **Real-time timing:** Every animation uses `dt` from timestamps so motion speed matches wall-clock time.
 - **Per-fragment Blinn-Phong:** Vertex shader now only passes data; the fragment shader computes Blinn-Phong lighting with a half-vector and per-fragment normals.
 - **Textures:**  
-  - `Public/wall.jpeg` for masonry walls/towers.  
-  - `Public/FiveArches_S.jpg` inset behind the rear windows to layer stone trim.  
-  - `Public/SevenArches_S.jpg` for doors, walkway, and pitched roof shingles.  
-  - `Public/ThreeFlowerShapedB_S.jpg` for the rose window and side lancets.  
-  - `Public/grass.png` on the ground plane.  
-  - `Public/SevenArches_N.jpg` mapped onto the rear window trio to mix wall + glass textures.  
-  UV tiling is customized per mesh to avoid stretching.
+  - `Public/wall.jpeg` for masonry walls/towers. From OpenGameArt.
+  - `Public/FiveArches_S.jpg` inset behind the rear windows to layer stone trim. From OpenGameArt.
+  - `Public/SevenArches_S.jpg` for doors, walkway, and pitched roof shingles. From OpenGameArt.
+  - `Public/ThreeFlowerShapedB_S.jpg` for the rose window and side lancets. From OpenGameArt.
+  - `Public/grass.png` on the ground plane. From lab7.
+  - `Public/SevenArches_N.jpg` mapped onto the rear window trio to mix wall + glass textures. From OpenGameArt.
 - **Custom shader effect:** “Stained-glass shimmer” (fragment shader lines 92-100) animates halos and streaks on any surface flagged with `glassEffect`. Every line in that block is documented.
 - **Complexity/Creativity:** Scene includes spinning cross, opening door, swinging bell, lanterns, orbiting bats, and one bat that lands, becomes Dracula, then departs.
 - **Quality & style:** Movements pivot at correct joints, textures mipmap cleanly, and code style follows the template conventions.
@@ -28,6 +27,3 @@ Animated gothic church courtyard with hierarchical motion, fragment lighting, mu
 ## Controls / Notes
 - Toggle animation with the button; camera + animations pause together.
 - Scene uses only template primitives (Cube/Cylinder/Cone/Sphere) and no third-party scripts beyond MV.js + WebGL utilities.
-
-## Assets
-All textures come from the provided assignment pack in `Public/`. No external shaders or models were imported.
